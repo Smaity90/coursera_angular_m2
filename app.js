@@ -38,7 +38,7 @@
                 ];
         var alreadyBoughtList=[];
 
-        // Add to ToBuy List
+        // Move  Items 
         service.moveToAlreadyBoughtList=function(index){
           alreadyBoughtList.push(toBuyList[index]);
           toBuyList.splice(index,1);
