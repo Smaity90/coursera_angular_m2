@@ -1,28 +1,59 @@
 (function () {
   'use strict';
-    angular.module('LunchCheck', [])
-    .controller('LunchCheckController', LunchCheckController);
 
-    CounterController.$inject = ['$scope'];
-    function LunchCheckController($scope){
-        $scope.lunchMenu='';
-        $scope.message='';
-        $scope.fontColor='';
-        $scope.checkLunch=function(){
-            var lunchMenu=$scope.lunchMenu;
-            if(lunchMenu!=""){
-              var arrayOfStrings = $scope.lunchMenu.split(',');
-              var noOfItems=arrayOfStrings.length; // does not consider empty item
-              if(noOfItems>3){
-                $scope.message='Too much!';
-              }else{
-                  $scope.message='Enjoy!';
-              }
-              $scope.fontColor='green';
-            }else{
-              $scope.fontColor='red';
-              $scope.message='Please enter data first';
-            }
+   angular.module('ShoppingListCheckOffApp', [])
+  .controller('ToBuyShoppingCtrl', ToBuyShoppingCtrl)
+  .controller('AlreadyBoughtShoppingCtrl', AlreadyBoughtShoppingCtrl)
+  .service('ShoppingListCheckOffService',ShoppingListCheckOffService);
+
+    // ToBuy Shopping Controller #############  Controller 1 ############
+    ToBuyShoppingCtrl.$inject = ['ShoppingListCheckOffService'];
+    function ToBuyShoppingCtrl(ShoppingListCheckOffService){
+       var ToBuyCtrl=this;
+       ToBuyCtrl.toBuyList=ShoppingListCheckOffService.getToBuyList();
+       ToBuyCtrl.moveToAlreadyBoughtList=function(index){
+         ShoppingListCheckOffService.moveToAlreadyBoughtList(index);
+       };
+    }
+
+
+    //Already Bought Shopping Controller #############  Controller 2 ############
+    AlreadyBoughtShoppingCtrl.$inject = ['ShoppingListCheckOffService'];
+    function AlreadyBoughtShoppingCtrl(ShoppingListCheckOffService){
+       var AlreadyBoughtCtrl=this;
+       AlreadyBoughtCtrl.alreadyBoughtList=ShoppingListCheckOffService.getAlreadyBoughtList();
+    }
+
+    //ShoppingListCheckOff Service #############  Service ############
+    function ShoppingListCheckOffService(){
+        var service=this;
+
+        //Initialize Shopping list
+        var toBuyList=[
+                  {name:'Apple',quantity:'2kg'},
+                  {name:'Banana',quantity:'1kg'},
+                  {name:'Orange',quantity:'3kg'},
+                  {name:'Mosambi',quantity:'5kg'},
+                  {name:'Papaya',quantity:'1kg'}
+                ];
+        var alreadyBoughtList=[];
+
+        // Add to ToBuy List
+        service.moveToAlreadyBoughtList=function(index){
+          alreadyBoughtList.push(toBuyList[index]);
+          toBuyList.splice(index,1);
+        }; 
+
+        // Get ToBuy List
+        service.getToBuyList=function(){
+          return toBuyList;
         };
-}
+
+        // Get Already Bought List
+        service.getAlreadyBoughtList=function(){
+          return alreadyBoughtList;
+        };
+
+    }
+
 })();
